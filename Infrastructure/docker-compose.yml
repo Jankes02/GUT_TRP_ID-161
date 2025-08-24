@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:16
+    container_name: my_postgres
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  python_monolith:
+    build: ../Python/MonolithicApp
+    container_name: python_monolith
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://myuser:mypassword@db:5432/mydb
+    ports:
+      - '8000:8000'
+    volumes:
+      - ../Python/MonolithicApp:/code
+
+  python_microservices:
+    build: ../Python/MicroserviceApp
+    container_name: python_microservices
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://myuser:mypassword@db:5432/mydb
+    ports:
+      - '8001:8001'
+    volumes:
+      - ../Python/MicroserviceApp:/code
+
+volumes:
+  pgdata:
