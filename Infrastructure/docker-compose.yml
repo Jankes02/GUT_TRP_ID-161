@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:16
-    container_name: my_postgres
+    container_name: postgres_db
     environment:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
@@ -24,9 +24,9 @@ services:
     volumes:
       - ../Python/MonolithicApp:/code
 
-  python_microservices:
+  python_microservice:
     build: ../Python/MicroserviceApp
-    container_name: python_microservices
+    container_name: python_microservice
     depends_on:
       - db
     environment:
