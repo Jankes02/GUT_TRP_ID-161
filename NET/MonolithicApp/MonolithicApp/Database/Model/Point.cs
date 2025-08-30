@@ -1,4 +1,4 @@
-﻿namespace MonolithicApp.Model
+﻿namespace MonolithicApp.Database.Model
 {
     public class Point
     {

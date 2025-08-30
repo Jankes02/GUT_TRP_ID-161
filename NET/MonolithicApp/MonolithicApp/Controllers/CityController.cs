@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using City = MonolithicApp.Model.City;
-using ICityService = MonolithicApp.Services.ICityService;
+using MonolithicApp.Database.Model;
+using MonolithicApp.Services.intf;
 
 namespace MonolithicApp.Controllers
 {
@@ -18,10 +17,49 @@ namespace MonolithicApp.Controllers
             _logger = logger;
         }
 
+        [HttpGet()]
+        public IActionResult Get()
+        {
+            try
+            {
+                return Ok(_cityService.GetAll());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return StatusCode(500, ex);
+            }
+        }
+
         [HttpGet("{name}")]
-        public City Get(string name) => _cityService.FindByName(name);
+        public IActionResult GetByName(string name)
+        {
+            try
+            {
+                return Ok(_cityService.FindByName(name));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return BadRequest(ex);
+            }
+        }
 
         [HttpPost]
-        public bool AddCity([FromBody] City city) => _cityService.AddCity(city);
+        public IActionResult Add([FromBody] City city)
+        {
+            try
+            {
+                if (_cityService.AddCity(city))
+                    return Ok();
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return BadRequest(ex);
+            }
+        }
     }
 }

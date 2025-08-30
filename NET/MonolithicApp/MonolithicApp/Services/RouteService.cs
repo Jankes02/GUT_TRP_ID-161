@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Point = MonolithicApp.Model.Point;
+using MonolithicApp.Database.Model;
 
 namespace MonolithicApp.Services
 {
