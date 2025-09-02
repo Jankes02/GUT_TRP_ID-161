@@ -6,6 +6,6 @@ namespace MonolithicApp.Services.intf
     {
         City FindByName(string name);
         List<City> GetAll();
-        bool AddCity(City city);
+        void AddCity(City city);
     }
 }

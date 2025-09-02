@@ -50,10 +50,8 @@ namespace MonolithicApp.Controllers
         {
             try
             {
-                if (_cityService.AddCity(city))
-                    return Ok();
-
-                return BadRequest();
+                _cityService.AddCity(city);
+                return Ok();
             }
             catch (Exception ex)
             {
