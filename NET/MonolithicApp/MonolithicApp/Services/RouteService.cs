@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Routing;
 using MonolithicApp.Database;
 using MonolithicApp.Database.Model;
 using MonolithicApp.Services.intf;
@@ -41,6 +42,34 @@ namespace MonolithicApp.Services
             }
 
             return null;
+        }
+
+        public List<List<string>> FindAllRoutes(string from, string to, List<string>? route = null)
+        {
+            if (route is null)
+                route = new List<string>();
+
+            if (route.Contains(from))
+                return new List<List<string>>();
+
+            var currentRoute = new List<string>(route) { from };
+
+            if (from == to)
+                return new List<List<string>> { currentRoute };
+
+            var allRoutes = new List<List<string>>();
+
+            var nextStepList = _dbContext.RouteFragments
+                .Where(rf => rf.From == from)
+                .ToList();
+
+            foreach (var nextStep in nextStepList)
+            {
+                var subRoutes = FindAllRoutes(nextStep.To, to, currentRoute);
+                allRoutes.AddRange(subRoutes);
+            }
+
+            return allRoutes;
         }
     }
 }
