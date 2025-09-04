@@ -1,8 +1,0 @@
-server:
-  servlet:
-    context-path: /city
-  port: 8000
-
-feign:
-  hystrix:
-    enabled: true

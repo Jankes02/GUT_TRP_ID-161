@@ -1,0 +1,62 @@
+### Get city by name (direct to city-service)
+GET http://localhost:8081/city/Miami
+
+### Get city info (direct to city-service)
+GET http://localhost:8081/city/info/Houston
+
+### Add a new city (direct to city-service)
+POST http://localhost:8081/city
+Content-Type: application/json
+
+{
+  "id": "c6",
+  "name": "Boston",
+  "state": "MA",
+  "population": 675647
+}
+
+### Get city by name (via API Gateway)
+GET http://localhost:8080/city/New%20York
+
+### Get city info (via API Gateway)
+GET http://localhost:8080/city/info/Miami
+
+
+### Find shortest route (direct to route-service)
+GET http://localhost:8082/routes/shortest?fromName=New%20York&toName=Houston
+
+### Find shortest route (via API Gateway)
+GET http://localhost:8080/routes/shortest?fromName=Chicago&toName=Houston
+
+
+### HEATMAP
+POST http://localhost:8080/routes/heatmap
+Content-Type: application/json
+Accept: application/json
+
+{
+  "directed": true,
+  "requests": [
+    {"from": "New York", "to": "Miami"},
+    {"from": "New York", "to": "Houston"}
+  ]
+}
+
+
+
+### Get most used connections
+GET http://localhost:8082/routes/most-used
+
+
+### Get most used connections for given day
+GET http://localhost:8082/routes/most-used?date=2025-09-04
+
+### Get most used connections (default = today)
+GET http://localhost:8082/routes/most-used
+
+
+### Shortest (z datą)
+GET http://localhost:8082/routes/shortest?fromName=New%20York&toName=Houston&date=2025-09-04
+
+### Shortest (domyślnie dziś)
+GET http://localhost:8082/routes/shortest?fromName=New%20York&toName=Houston
