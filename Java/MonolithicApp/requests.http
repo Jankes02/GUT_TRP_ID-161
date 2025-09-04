@@ -1,0 +1,62 @@
+### Get city by name (monolith)
+GET http://localhost:8080/city/Miami
+
+### Get city info (monolith)
+GET http://localhost:8080/city/info/Houston
+
+### Add a new city (monolith)
+POST http://localhost:8080/city
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": "c6",
+  "name": "Boston",
+  "state": "MA",
+  "population": 675647
+}
+
+### Get city by name (monolith; formerly via API Gateway)
+GET http://localhost:8080/city/New%20York
+
+### Get city info (monolith; formerly via API Gateway)
+GET http://localhost:8080/city/info/Miami
+
+
+########################################
+# ROUTES (was: route-service on 8082 and via gateway 8080)
+########################################
+
+### Find shortest route (monolith; replaced direct 8082)
+GET http://localhost:8080/routes/shortest?fromName=New%20York&toName=Houston
+
+### Find shortest route (monolith; formerly via API Gateway)
+GET http://localhost:8080/routes/shortest?fromName=Chicago&toName=Houston
+
+### HEATMAP (monolith)
+POST http://localhost:8080/routes/heatmap
+Content-Type: application/json
+Accept: application/json
+
+{
+  "directed": true,
+  "requests": [
+    {"from": "New York", "to": "Miami"},
+    {"from": "New York", "to": "Houston"}
+  ]
+}
+
+### Get most used connections (monolith)
+GET http://localhost:8080/routes/most-used
+
+### Get most used connections for given day (monolith)
+GET http://localhost:8080/routes/most-used?date=2025-09-04
+
+### Get most used connections (default = today) (monolith)
+GET http://localhost:8080/routes/most-used
+
+### Shortest (with date) (monolith)
+GET http://localhost:8080/routes/shortest?fromName=New%20York&toName=Houston&date=2025-09-04
+
+### Shortest (default today) (monolith)
+GET http://localhost:8080/routes/shortest?fromName=New%20York&toName=Houston
