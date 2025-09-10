@@ -15,3 +15,8 @@ docker compose up
 | postgres            | 5432:5432    | Database   |
 | python_monolith     | 8000:8000    | Python API |
 | python_microservice | 8001:8001    | Python API |
+
+## to connect to db use URL:
+```sh
+psql postgres://myuser:mypassword@localhost:5432/mydb
+```
