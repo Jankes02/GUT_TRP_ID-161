@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MonolithicApp.Database.Model;
 using MonolithicApp.Services.intf;
+using MonolithicApp.DTOs;
+using System;
+using Microsoft.Extensions.Logging;
 
 namespace MonolithicApp.Controllers
 {
@@ -17,31 +20,18 @@ namespace MonolithicApp.Controllers
             _logger = logger;
         }
 
-        [HttpGet()]
-        public IActionResult Get()
-        {
-            try
-            {
-                return Ok(_cityService.GetAll());
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return StatusCode(500, ex);
-            }
-        }
-
         [HttpGet("{name}")]
         public IActionResult GetByName(string name)
         {
             try
             {
-                return Ok(_cityService.FindByName(name));
+                var city = _cityService.FindByName(name);
+                return Ok(city);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
-                return BadRequest(ex);
+                _logger.LogWarning(ex, "City not found: {Name}", name);
+                return NotFound("City not found");
             }
         }
 
@@ -50,13 +40,28 @@ namespace MonolithicApp.Controllers
         {
             try
             {
-                _cityService.AddCity(city);
-                return Ok();
+                var addedCity = _cityService.AddCity(city);
+                return CreatedAtAction(nameof(GetByName), new { name = addedCity.Name }, addedCity);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
-                return BadRequest(ex);
+                _logger.LogError(ex, "Error adding city");
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("info/{name}")]
+        public IActionResult GetInfo(string name)
+        {
+            try
+            {
+                var cityInfo = _cityService.ComputeInfo(name);
+                return Ok(cityInfo);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "City not found for info: {Name}", name);
+                return NotFound("City not found");
             }
         }
     }

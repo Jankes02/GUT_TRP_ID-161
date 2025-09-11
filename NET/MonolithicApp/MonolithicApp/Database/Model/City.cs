@@ -1,10 +1,21 @@
-﻿namespace MonolithicApp.Database.Model
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MonolithicApp.Database.Model
 {
     public class City
     {
-        public int CityId { get; set; }
+        [Key]
+        [Column("id")]
+        public string Id { get; set; }
+
+        [Column("name")]
         public string Name { get; set; }
+
+        [Column("state")]
         public string State { get; set; }
+
+        [Column("population")]
         public int Population { get; set; }
     }
 }

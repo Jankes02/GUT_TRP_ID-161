@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MonolithicApp.Services.intf;
+using System;
+using Microsoft.Extensions.Logging;
+using System.Globalization;
 
 namespace MonolithicApp.Controllers
 {
     [ApiController]
-    [Route("route")]
+    [Route("routes")]
     public class RouteController : ControllerBase
     {
         private readonly IRouteService _routeService;
@@ -16,36 +19,74 @@ namespace MonolithicApp.Controllers
             _logger = logger;
         }
 
-        [HttpGet("all")]
-        public IActionResult FindAllRoutesFromAToB([FromQuery] string from, [FromQuery] string to)
+        [HttpGet("shortest")]
+        public IActionResult GetShortestRoute([FromQuery] string fromName, [FromQuery] string toName, [FromQuery] string? date)
         {
+            DateTime? parsedDate = null;
+            if (!string.IsNullOrEmpty(date))
+            {
+                if (DateTime.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt))
+                {
+                    parsedDate = dt;
+                }
+                else
+                {
+                    return BadRequest("Invalid date format. Use yyyy-MM-dd.");
+                }
+            }
+
             try
             {
-                var routes = _routeService.FindAllRoutes(from, to);
-                return Ok(routes);
-            }
-            catch (Exception ex) 
-            {
-                _logger.LogError(ex, ex.Message);
-                return StatusCode(500, ex);
-            }
-        }
-
-        [HttpGet("optimal")]
-        public IActionResult FindOptimalRoute([FromQuery] string from, [FromQuery] string to)
-        {
-            try
-            {
-                var routes = _routeService.FindAllRoutes(from, to);
-                if (routes is not null && routes.Count > 0)
-                    return Ok(routes.OrderBy(r => r.Count).FirstOrDefault());
-
-                return Ok(new List<string>());
+                var route = _routeService.ShortestByStops(fromName, toName, parsedDate);
+                return Ok(route);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return StatusCode(500, ex);
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("random-points")]
+        public IActionResult RandomPoints([FromQuery] int count)
+        {
+            try
+            {
+                var points = _routeService.FindShortestRouteRandomPoints(count);
+                return Ok(points);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("most-used")]
+        public IActionResult GetMostUsedConnections([FromQuery] string? date)
+        {
+            DateTime? parsedDate = null;
+            if (!string.IsNullOrEmpty(date))
+            {
+                if (DateTime.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt))
+                {
+                    parsedDate = dt;
+                }
+                else
+                {
+                    return BadRequest("Invalid date format. Use yyyy-MM-dd.");
+                }
+            }
+
+            try
+            {
+                var connections = _routeService.GetMostUsedConnections(parsedDate);
+                return Ok(connections);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
     }

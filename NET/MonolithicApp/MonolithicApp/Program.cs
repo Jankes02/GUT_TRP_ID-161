@@ -24,8 +24,8 @@ builder.Services.AddSwaggerGen(
 #region Custom components
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSingleton<ICityService, CityService>();
-builder.Services.AddSingleton<IRouteService, RouteService>();
+builder.Services.AddScoped<ICityService, CityService>();
+builder.Services.AddScoped<IRouteService, RouteService>();
 #endregion
 
 #region Database

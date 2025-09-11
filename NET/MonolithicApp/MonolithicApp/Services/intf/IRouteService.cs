@@ -1,8 +1,14 @@
-﻿namespace MonolithicApp.Services.intf
+﻿using MonolithicApp.DTOs;
+using System.Collections.Generic;
+using System;
+
+namespace MonolithicApp.Services.intf
 {
     public interface IRouteService
     {
-        List<string> FindAnyRoute(string from, string to, List<string>? route = null);
-        List<List<string>> FindAllRoutes(string from, string to, List<string>? route = null);
+        RouteResponse ShortestByStops(string fromName, string toName, DateTime? date);
+        string[] FindShortestRouteRandomPoints(int count);
+        List<ConnectionUsageDto> GetMostUsedConnections(DateTime? date);
+        HeatmapResponse HeatmapUsage(HeatmapRequest request);
     }
 }
