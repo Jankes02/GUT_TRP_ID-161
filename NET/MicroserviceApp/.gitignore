@@ -1,0 +1,25 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.bak
+
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# NuGet
+*.nupkg
+packages/
+
+# Rider
+.idea/
+
+# Logs
+*.log
+
+# Local settings
+appsettings*.Development.json
+
+# Other
+Thumbs.db

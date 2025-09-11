@@ -1,26 +1,29 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
-namespace APIGateway
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Configure App Configuration to load configuration.json
+builder.Configuration.AddJsonFile("configuration.json", optional: false, reloadOnChange: true);
+
+// Configure services
+builder.Services.AddOcelot();
+
+var app = builder.Build();
+
+// Configure HTTP request pipeline
+if (app.Environment.IsDevelopment())
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration(
-                    ic => ic.AddJsonFile("configuration.json"))
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
-    }
+    app.UseDeveloperExceptionPage();
 }
+
+app.UseRouting(); // Ocelot needs routing
+
+// Use Ocelot middleware, .Wait() is important for async config loading
+app.UseOcelot().Wait();
+
+app.Run();

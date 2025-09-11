@@ -1,38 +1,45 @@
-﻿using System.Collections.Generic;
-using City = MonolithicApp.Model.City;
+﻿using MonolithicApp.Database;
+using MonolithicApp.Database.Model;
+using MonolithicApp.DTOs;
+using MonolithicApp.Services.intf;
 
 namespace MonolithicApp.Services
 {
-    public interface ICityService
-    {
-        City FindByName(string name);
-        bool AddCity(City city);
-    }
-
     public class CityService : ICityService
     {
-        private readonly Dictionary<string, City> _cities;
+        private readonly AppDbContext _dbContext;
 
-        public CityService()
+        public CityService(AppDbContext dbContext)
         {
-            _cities = new Dictionary<string, City>();
-            City city1 = new City{Name = "Gdynia", State = "Pomerania", Population = 1234};
-            City city2 = new City{Name = "Gdansk", State = "Pomerania", Population = 12345};
-            City city3 = new City{Name = "Sopot", State = "Pomerania", Population = 123};
-            _cities.Add(city1.Name.ToLower(), city1);
-            _cities.Add(city2.Name.ToLower(), city2);
-            _cities.Add(city3.Name.ToLower(), city3);
+            _dbContext = dbContext;
         }
-        
+
         public City FindByName(string name)
         {
-            return _cities[name];
+            var city = _dbContext.Cities.FirstOrDefault(c => c.Name == name);
+            if (city == null)
+            {
+                throw new Exception("City not found");
+            }
+            return city;
         }
 
-        public bool AddCity(City city)
+        public City AddCity(City city)
         {
-            _cities.Add(city.Name.ToLower(), city);
-            return true;
+            _dbContext.Cities.Add(city);
+            _dbContext.SaveChanges();
+            return city;
+        }
+
+        public CityInfoDto ComputeInfo(string name)
+        {
+            City c = FindByName(name);
+            int pop = c.Population;
+            string cat = pop < 50_000 ? "SMALL" : pop < 250_000 ? "MEDIUM" : "LARGE";
+            int nameLen = c.Name?.Length ?? 0;
+            int vowels = c.Name?.ToLower().Count(ch => "aeiouyąęó".Contains(ch)) ?? 0;
+            int projection = (int)Math.Round(pop * Math.Pow(1 + 0.012, 5));
+            return new CityInfoDto(c.Name, c.State, pop, cat, nameLen, vowels, projection);
         }
     }
 }
