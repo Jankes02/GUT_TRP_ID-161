@@ -1,5 +1,5 @@
 ﻿{
-  "ReRoutes": [
+  "Routes": [
     {
       "DownstreamPathTemplate": "/city/{everything}",
       "DownstreamScheme": "http",
@@ -10,10 +10,10 @@
         }
       ],
       "UpstreamPathTemplate": "/city/{everything}",
-      "UpstreamHttpMethod": [ "GET" ]
+      "UpstreamHttpMethod": [ "GET", "POST" ]
     },
     {
-      "DownstreamPathTemplate": "/city",
+      "DownstreamPathTemplate": "/city/info/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -21,11 +21,11 @@
           "Port": 3001
         }
       ],
-      "UpstreamPathTemplate": "/city",
-      "UpstreamHttpMethod": [ "POST" ]
+      "UpstreamPathTemplate": "/city-info/{everything}",
+      "UpstreamHttpMethod": [ "GET" ]
     },
     {
-      "DownstreamPathTemplate": "/route",
+      "DownstreamPathTemplate": "/routes/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -33,8 +33,8 @@
           "Port": 3002
         }
       ],
-      "UpstreamPathTemplate": "/route",
-      "UpstreamHttpMethod": [ "GET" ]
+      "UpstreamPathTemplate": "/routes/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST" ]
     }
   ],
   "GlobalConfiguration": {
