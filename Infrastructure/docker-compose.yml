@@ -19,22 +19,40 @@ services:
       - db
     environment:
       DATABASE_URL: postgres://myuser:mypassword@db:5432/mydb
+      PYTHONPATH: /code
     ports:
       - '8000:8000'
     volumes:
-      - ../Python/MonolithicApp:/code
+      - ../Python/MonolithicApp:/code/MonolithicApp  # Mount app to subdir
+      - ../Python/src:/code/src                      # Mount shared src
 
-  python_microservice:
-    build: ../Python/MicroserviceApp
-    container_name: python_microservice
+  python_route_service:
+    build: ../Python/MicroserviceApp/RouteService
+    container_name: python_route_service
     depends_on:
       - db
     environment:
       DATABASE_URL: postgres://myuser:mypassword@db:5432/mydb
+      PYTHONPATH: /code
+    ports:
+      - '8002:8002'
+    volumes:
+      - ../Python/MicroserviceApp/RouteService:/code/MicroserviceApp/RouteService
+      - ../Python/src:/code/src
+
+  python_city_service:
+    build: ../Python/MicroserviceApp/CityService
+    container_name: python_city_service
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://myuser:mypassword@db:5432/mydb
+      PYTHONPATH: /code
     ports:
       - '8001:8001'
     volumes:
-      - ../Python/MicroserviceApp:/code
+      - ../Python/MicroserviceApp/CityService:/code/MicroserviceApp/CityService
+      - ../Python/src:/code/src
 
 volumes:
   pgdata:
