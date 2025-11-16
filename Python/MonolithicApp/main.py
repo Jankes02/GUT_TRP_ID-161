@@ -6,7 +6,6 @@ import psycopg2
 import psycopg2.extras
 import uvicorn
 
-
 from src.models.routes import RouteResponse, ConnectionUsageDto, HeatmapResponse, HeatmapRequest
 from src.repos.connectionRepository import ConnectionRepository
 from src.services.routeService import RouteService

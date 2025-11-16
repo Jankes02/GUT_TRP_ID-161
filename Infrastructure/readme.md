@@ -8,15 +8,21 @@
 docker compose up
 ```
 
-## ports
+## containers
 
-| Container Name      | Port Mapping | Type       |
-| ------------------- | ------------ | ---------- |
-| postgres            | 5432:5432    | Database   |
-| python_monolith     | 8000:8000    | Python API |
-| python_microservice | 8001:8001    | Python API |
+| Container Name      | PORT | Type       | Description            |
+| ------------------- |------| ---------- |------------------------|
+| postgres            | 5432 | Database   |                        |
+| python_monolith     | 8000 | Python API | Monolithic application |
+| python_microservice | 8001 | Python API | Cities Microservice    |
+| python_microservice | 8002 | Python API | Routes Microservice    |
 
 ## to connect to db use URL:
 ```sh
 psql postgres://myuser:mypassword@localhost:5432/mydb
+```
+
+## to test ig it works fetch to:
+```request
+GET localhost:PORT/health
 ```
