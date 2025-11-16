@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS cities (
     state VARCHAR,
     population INTEGER
 );
+
 -- Insert sample cities
 INSERT INTO cities (id, name, state, population) VALUES
 -- Major hubs
