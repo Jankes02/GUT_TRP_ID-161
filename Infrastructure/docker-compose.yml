@@ -94,5 +94,41 @@ services:
     ports:
       - '8005:8005'
 
+  dotnet_monolith:
+    build: ../NET/MonolithicApp
+    container_name: dotnet_monolith
+    depends_on:
+      - db
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080
+      ConnectionStrings__Postgres: 'Host=db;Port=5432;Database=mydb;Username=myuser;Password=mypassword'
+    ports:
+      - '8006:8080'
+
+  dotnet_city_service:
+    build: ../NET/MicroserviceApp/CityService
+    container_name: dotnet_city_service
+    depends_on:
+      - db
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080
+      ConnectionStrings__Postgres: 'Host=db;Port=5432;Database=mydb;Username=myuser;Password=mypassword'
+    ports:
+      - '8007:8080'
+
+  dotnet_route_service:
+    build: ../NET/MicroserviceApp/RouteService
+    container_name: dotnet_route_service
+    depends_on:
+      - db
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080
+      ConnectionStrings__Postgres: 'Host=db;Port=5432;Database=mydb;Username=myuser;Password=mypassword'
+    ports:
+      - '8008:8080'
+
 volumes:
   pgdata:
