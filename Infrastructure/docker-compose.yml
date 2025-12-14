@@ -66,5 +66,33 @@ services:
     ports:
       - '8003:8003'
 
+  java_city_service:
+    build:
+      context: ../Java/MicroserviceApp
+      dockerfile: city-service/Dockerfile
+    container_name: java_city_service
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/mydb
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
+    ports:
+      - '8004:8004'
+
+  java_route_service:
+    build:
+      context: ../Java/MicroserviceApp
+      dockerfile: route-service/Dockerfile
+    container_name: java_route_service
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/mydb
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
+    ports:
+      - '8005:8005'
+
 volumes:
   pgdata:

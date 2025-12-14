@@ -1,0 +1,5 @@
+Method,Name,Error,Occurrences
+GET,/routes/most-used,RemoteDisconnected('Remote end closed connection without response'),536
+GET,/routes/shortest,RemoteDisconnected('Remote end closed connection without response'),544
+POST,/routes/heatmap,RemoteDisconnected('Remote end closed connection without response'),534
+GET,/routes/random-points,RemoteDisconnected('Remote end closed connection without response'),485

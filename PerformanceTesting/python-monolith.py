@@ -2,6 +2,7 @@ from locust import HttpUser, task, between, events
 from datetime import datetime
 import random
 import csv
+import os
 
 # Store response times globally
 response_times = []
@@ -31,6 +32,7 @@ def on_quitting(environment, **kwargs):
 
 class MonolithAppUser(HttpUser):
     wait_time = between(1, 3)
+    host = os.environ.get("PYTHON_MONOLITH_HOST", "http://localhost:8000")
 
     city_names = [
         "New York", "Los Angeles", "Chicago", "Houston", "Miami",

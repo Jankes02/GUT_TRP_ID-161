@@ -2,9 +2,12 @@ from locust import HttpUser, task, between, events
 from datetime import datetime
 import random
 import csv
+import os
+
 
 # Store response times globally
 response_times = []
+
 
 @events.request.add_listener
 def on_request(request_type, name, response_time, response_length, **kwargs):
@@ -14,6 +17,7 @@ def on_request(request_type, name, response_time, response_length, **kwargs):
         "response_time_ms": response_time,
         "response_length": response_length
     })
+
 
 @events.quitting.add_listener
 def on_quitting(environment, **kwargs):
@@ -29,15 +33,40 @@ def on_quitting(environment, **kwargs):
         print('FAILURE!')
     print("Response times saved to response_times.csv")
 
-class CityApiUser(HttpUser):
-    wait_time = between(1, 3)
 
+class CitiesServiceUser(HttpUser):
+    """User class for testing the Cities microservice"""
+    host = os.environ.get("CITIES_HOST", "http://localhost:8001")
+    wait_time = between(1, 3)
+    weight = 3  # 3 tasks in this service
+    
     city_names = [
         "New York", "Los Angeles", "Chicago", "Houston", "Miami",
         "Denver", "Seattle", "Atlanta", "Boston", "Phoenix",
         "Kansas City", "Salt Lake City", "Nashville", "Portland", "Buffalo"
     ]
 
+    @task(1)
+    def get_city(self):
+        city = random.choice(self.city_names)
+        self.client.get(f"/city/{city}", name="/city/[city]")
+
+    @task(1)
+    def get_city_info(self):
+        city = random.choice(self.city_names)
+        self.client.get(f"/city/info/{city}", name="/city/info/[city]")
+
+    @task(1)
+    def get_all_cities(self):
+        self.client.get("/cities")
+
+
+class RoutesServiceUser(HttpUser):
+    """User class for testing the Routes microservice"""
+    host = os.environ.get("ROUTES_HOST", "http://localhost:8002")
+    wait_time = between(1, 3)
+    weight = 4  # 4 tasks in this service
+    
     city_pairs = [
         ("Boston", "Miami"),
         ("New York", "Los Angeles"),
@@ -48,7 +77,6 @@ class CityApiUser(HttpUser):
         ("Phoenix", "Houston")
     ]
 
-    # Sample request pairs for heatmap (from some of your connections)
     heatmap_request_pairs = [
         {"from_city": "Boston", "to_city": "Buffalo"},
         {"from_city": "Buffalo", "to_city": "New York"},
@@ -60,35 +88,27 @@ class CityApiUser(HttpUser):
     ]
 
     @task(1)
-    def get_city(self):
-        city = random.choice(self.city_names)
-        self.client.get(f"/city/{city}")
-
-    @task(1)
-    def get_city_info(self):
-        city = random.choice(self.city_names)
-        self.client.get(f"/city/info/{city}")
-
-    @task(1)
-    def get_all_cities(self):
-        self.client.get("/cities")
-
-    @task(1)
     def get_shortest_route(self):
         from_city, to_city = random.choice(self.city_pairs)
-        self.client.get(f"/routes/shortest?fromName={from_city}&toName={to_city}")
+        self.client.get(
+            f"/routes/shortest?fromName={from_city}&toName={to_city}",
+            name="/routes/shortest"
+        )
 
     @task(1)
     def get_random_points(self):
         count = random.randint(1, 5)
-        self.client.get(f"/routes/random-points?count={count}")
+        self.client.get(
+            f"/routes/random-points?count={count}",
+            name="/routes/random-points"
+        )
 
     @task(1)
     def get_most_used_connections(self):
         if random.random() > 0.5:
             self.client.get("/routes/most-used")
         else:
-            self.client.get("/routes/most-used?date=2025-11-01")
+            self.client.get("/routes/most-used?date=2025-11-01", name="/routes/most-used")
 
     @task(1)
     def post_heatmap(self):
