@@ -1,17 +1,18 @@
 To run performance tests run:
 
 ```sh
-locust -f locustfile.py
+locust -f <script_name>.py
 ```
 
 And go to `http://localhost:8089`.
 
-# All commands:
+# Locust setup in GUI
 
-- `locust -f python-monolith.py`
-- `locust -f python-microservices.py`
-- `locust -f java-monolith.py`
-- `locust -f java-microservices.py`
+- Max concurrent users: 10000
+- Users ramp up: 100 users per second
+- Time: 5 minutes (5m)
+
+Waiting period is set to 1-3 seconds. It's how frequent user do requests, that's why requests concurrency (RPS) changes over time.
 
 # Problems
 
