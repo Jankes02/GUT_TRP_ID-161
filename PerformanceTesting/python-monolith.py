@@ -19,7 +19,7 @@ def on_request(request_type, name, response_time, response_length, **kwargs):
 def on_quitting(environment, **kwargs):
     try:
         print('file opened')
-        with open(f"./logs/response_times_{datetime.now()}.csv", "w", newline="") as csvfile:
+        with open(f"./logs/python-monolith/response_times_{datetime.now()}.csv", "w", newline="") as csvfile:
             fieldnames = ["request_type", "name", "response_time_ms", "response_length"]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
@@ -29,7 +29,7 @@ def on_quitting(environment, **kwargs):
         print('FAILURE!')
     print("Response times saved to response_times.csv")
 
-class CityApiUser(HttpUser):
+class MonolithAppUser(HttpUser):
     wait_time = between(1, 3)
 
     city_names = [
@@ -58,10 +58,6 @@ class CityApiUser(HttpUser):
         {"from_city": "Denver", "to_city": "Salt Lake City"},
         {"from_city": "Los Angeles", "to_city": "Phoenix"}
     ]
-
-    @task(1)
-    def health_check(self):
-        self.client.get("/health")
 
     @task(1)
     def get_city(self):
